@@ -17,7 +17,7 @@ const corsOptions = {
         'https://ai-assignment-1-ojix.onrender.com', // Your backend URL (for self-requests)
         process.env.FRONTEND_URL || 'https://your-frontend-url.vercel.app' // Your actual frontend URL - update this after deploying
       ]
-    : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:4173'], // Allow local development (including Vite preview)
+    : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:4173'], // Allow local development (including Vite preview)
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

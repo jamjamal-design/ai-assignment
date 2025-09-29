@@ -1,34 +1,203 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+﻿import { useState, useEffect, useCallback } from 'react'
+import ChatInterface from './components/ChatInterface'
+import HamburgerMenu from './components/HamburgerMenu'
+import ConversationsList from './components/ConversationsList'
+import SearchPanel from './components/SearchPanel'
+import { API_ENDPOINTS } from './config/api'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentConversationId, setCurrentConversationId] = useState(null)
+  const [conversations, setConversations] = useState([])
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false)
+  const [isConversationsOpen, setIsConversationsOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchResults, setSearchResults] = useState([])
+  
+  // Generate unique session ID for conversation management
+  const [sessionId] = useState(() => {
+    return localStorage.getItem('sessionId') || 
+           `session_${Date.now()}_${Math.random().toString(36).substring(7)}`
+  })
+
+  // Save session ID to localStorage
+  useEffect(() => {
+    localStorage.setItem('sessionId', sessionId)
+  }, [sessionId])
+
+  const loadConversations = useCallback(() => {
+    // Backend doesn't support conversations endpoint yet
+    // Initialize with empty conversations for now
+    setConversations([])
+  }, [])
+
+  // Load conversations on startup
+  useEffect(() => {
+    loadConversations()
+  }, [loadConversations])
+
+  const handleNewConversation = () => {
+    setCurrentConversationId(null)
+    setIsSearching(false)
+    setSearchResults([])
+    setIsHamburgerOpen(false)
+    setIsConversationsOpen(false)
+    setIsSearchOpen(false)
+  }
+
+  const handleConversationSelect = (conversationId) => {
+    setCurrentConversationId(conversationId)
+    setIsConversationsOpen(false)
+    setIsSearchOpen(false)
+    setIsSearching(false)
+    setSearchResults([])
+  }
+
+  const handleConversationCreate = (conversationId) => {
+    setCurrentConversationId(conversationId)
+    loadConversations()
+  }
+
+  const handleConversationUpdate = () => {
+    loadConversations()
+  }
+
+  const handleDeleteConversation = (conversationId) => {
+    // Backend doesn't support delete endpoint yet
+    // For now, just remove from local state
+    setConversations(prev => prev.filter(c => c.id !== conversationId))
+    if (currentConversationId === conversationId) {
+      setCurrentConversationId(null)
+    }
+  }
+
+  const handleHamburgerClick = () => {
+    setIsHamburgerOpen(!isHamburgerOpen)
+    setIsConversationsOpen(false)
+    setIsSearchOpen(false)
+  }
+
+  const handleViewConversations = () => {
+    setIsConversationsOpen(true)
+    setIsHamburgerOpen(false)
+    setIsSearchOpen(false)
+  }
+
+  const handleSearchClick = () => {
+    setIsSearchOpen(!isSearchOpen)
+    setIsHamburgerOpen(false)
+    setIsConversationsOpen(false)
+  }
+
+  const handleSearch = async (query) => {
+    if (!query.trim()) {
+      setIsSearching(false)
+      setSearchResults([])
+      return
+    }
+
+    setIsSearching(true)
+    try {
+      // Backend doesn't support search endpoint yet
+      // For now, just filter local conversations
+      const filtered = conversations.filter(c => 
+        c.title?.toLowerCase().includes(query.toLowerCase()) ||
+        c.lastMessage?.toLowerCase().includes(query.toLowerCase())
+      )
+      setSearchResults(filtered)
+    } catch (error) {
+      console.error('Search failed:', error)
+      setSearchResults([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  const closeAllModals = () => {
+    setIsHamburgerOpen(false)
+    setIsConversationsOpen(false)
+    setIsSearchOpen(false)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="app">
+      {/* Floating Controls */}
+      <div className="floating-controls">
+        <button 
+          className="hamburger-button"
+          onClick={handleHamburgerClick}
+          title="Menu"
+        >
+          
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        
+        <button 
+          className="search-button"
+          onClick={handleSearchClick}
+          title="Search"
+        >
+          
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+      {/* Hamburger Menu Dropdown */}
+      {isHamburgerOpen && (
+        <HamburgerMenu 
+          onNewConversation={handleNewConversation}
+          onViewConversations={handleViewConversations}
+          onClose={() => setIsHamburgerOpen(false)}
+        />
+      )}
+
+      {/* Conversations List Modal */}
+      {isConversationsOpen && (
+        <ConversationsList 
+          conversations={conversations}
+          currentConversationId={currentConversationId}
+          onConversationSelect={handleConversationSelect}
+          onDeleteConversation={handleDeleteConversation}
+          onClose={() => setIsConversationsOpen(false)}
+        />
+      )}
+
+      {/* Search Panel Modal */}
+      {isSearchOpen && (
+        <SearchPanel 
+          onSearch={handleSearch}
+          onClose={() => setIsSearchOpen(false)}
+          isSearching={isSearching}
+          searchResults={searchResults}
+          onConversationSelect={handleConversationSelect}
+        />
+      )}
+
+      {/* Main Chat Interface */}
+      <ChatInterface 
+        conversationId={currentConversationId}
+        sessionId={sessionId}
+        onConversationUpdate={handleConversationUpdate}
+        onConversationCreate={handleConversationCreate}
+        onNewConversation={handleNewConversation}
+      />
+
+      {/* Background overlay to close modals when clicking outside */}
+      {(isHamburgerOpen || isConversationsOpen || isSearchOpen) && (
+        <div 
+          className="modal-overlay" 
+          onClick={closeAllModals}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'transparent',
+            zIndex: 999
+          }}
+        />
+      )}
+    </div>
   )
 }
 
