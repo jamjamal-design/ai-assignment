@@ -12,7 +12,7 @@ const MessageInput = ({ onSendMessage, disabled, onNewConversation }) => {
     }
   }
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSubmit(e)
@@ -25,30 +25,33 @@ const MessageInput = ({ onSendMessage, disabled, onNewConversation }) => {
         className="new-conversation-btn"
         onClick={onNewConversation}
         title="New Conversation"
+        disabled={disabled}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
+        <span className="plus-icon">+</span>
       </button>
-      <form onSubmit={handleSubmit} className="message-input-wrap">
+      
+      <div className="message-input-wrapper">
         <textarea
+          className="message-input"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
+          onKeyDown={handleKeyDown}
+          placeholder="Type your message here..."
           disabled={disabled}
-          rows={1}
+          rows={2}
         />
         <button
-          type="submit"
-          className="send-btn"
+          type="button"
+          className="send-button"
+          onClick={handleSubmit}
           disabled={disabled || !message.trim()}
+          title="Send message"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
           </svg>
         </button>
-      </form>
+      </div>
     </div>
   )
 }

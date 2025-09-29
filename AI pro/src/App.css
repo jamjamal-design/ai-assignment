@@ -13,79 +13,26 @@
   overflow: hidden;
 }
 
-/* Floating Controls */
-.floating-controls {
+/* Modal Overlay */
+.modal-overlay {
   position: fixed;
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1001;
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 999;
 }
 
-.floating-controls > * {
-  pointer-events: auto;
-}
-
-.hamburger-button,
-.search-button {
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  color: var(--text-color);
-  font-size: 18px;
-}
-
-.hamburger-button:hover,
-.search-button:hover {
-  background: var(--hover-background);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-.hamburger-button:active,
-.search-button:active {
-  transform: translateY(0);
-}
-
-/* Responsive Design for Mobile */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .floating-controls {
-    top: 16px;
-    left: 16px;
-    right: 16px;
-  }
-
-  .hamburger-button,
-  .search-button {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
+  .app {
+    height: 100vh;
   }
 }
 
 @media (max-width: 480px) {
-  .floating-controls {
-    top: 12px;
-    left: 12px;
-    right: 12px;
-  }
-
-  .hamburger-button,
-  .search-button {
-    width: 36px;
-    height: 36px;
-    font-size: 14px;
+  .app {
+    height: 100vh;
   }
 }

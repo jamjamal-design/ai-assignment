@@ -3,6 +3,7 @@ import ChatInterface from './components/ChatInterface'
 import HamburgerMenu from './components/HamburgerMenu'
 import ConversationsList from './components/ConversationsList'
 import SearchPanel from './components/SearchPanel'
+import Settings from './components/Settings'
 import { API_ENDPOINTS } from './config/api'
 import './App.css'
 
@@ -12,8 +13,15 @@ function App() {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false)
   const [isConversationsOpen, setIsConversationsOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
   const [searchResults, setSearchResults] = useState([])
+  const [settings, setSettings] = useState({
+    theme: 'dark',
+    fontSize: 'medium',
+    autoSave: true,
+    notifications: true
+  })
   
   // Generate unique session ID for conversation management
   const [sessionId] = useState(() => {
@@ -26,10 +34,38 @@ function App() {
     localStorage.setItem('sessionId', sessionId)
   }, [sessionId])
 
+  // Load settings from localStorage
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('appSettings')
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings))
+    }
+  }, [])
+
   const loadConversations = useCallback(() => {
     // Backend doesn't support conversations endpoint yet
-    // Initialize with empty conversations for now
-    setConversations([])
+    // Mock recent conversations for demonstration
+    const mockConversations = [
+      {
+        id: '1',
+        title: 'React Development Help',
+        lastMessage: 'How to optimize React components?',
+        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString() // 30 minutes ago
+      },
+      {
+        id: '2',
+        title: 'AI Model Comparison',
+        lastMessage: 'What are the differences between GPT and Gemini?',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString() // 2 hours ago
+      },
+      {
+        id: '3',
+        title: 'JavaScript Best Practices',
+        lastMessage: 'Can you explain async/await?',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() // 1 day ago
+      }
+    ]
+    setConversations(mockConversations)
   }, [])
 
   // Load conversations on startup
@@ -44,12 +80,14 @@ function App() {
     setIsHamburgerOpen(false)
     setIsConversationsOpen(false)
     setIsSearchOpen(false)
+    setIsSettingsOpen(false)
   }
 
   const handleConversationSelect = (conversationId) => {
     setCurrentConversationId(conversationId)
     setIsConversationsOpen(false)
     setIsSearchOpen(false)
+    setIsSettingsOpen(false)
     setIsSearching(false)
     setSearchResults([])
   }
@@ -76,18 +114,33 @@ function App() {
     setIsHamburgerOpen(!isHamburgerOpen)
     setIsConversationsOpen(false)
     setIsSearchOpen(false)
+    setIsSettingsOpen(false)
+  }
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(true)
+    setIsHamburgerOpen(false)
+    setIsConversationsOpen(false)
+    setIsSearchOpen(false)
+  }
+
+  const handleSettingsUpdate = (newSettings) => {
+    setSettings(newSettings)
+    localStorage.setItem('appSettings', JSON.stringify(newSettings))
   }
 
   const handleViewConversations = () => {
     setIsConversationsOpen(true)
     setIsHamburgerOpen(false)
     setIsSearchOpen(false)
+    setIsSettingsOpen(false)
   }
 
   const handleSearchClick = () => {
     setIsSearchOpen(!isSearchOpen)
     setIsHamburgerOpen(false)
     setIsConversationsOpen(false)
+    setIsSettingsOpen(false)
   }
 
   const handleSearch = async (query) => {
@@ -118,35 +171,20 @@ function App() {
     setIsHamburgerOpen(false)
     setIsConversationsOpen(false)
     setIsSearchOpen(false)
+    setIsSettingsOpen(false)
   }
 
   return (
     <div className="app">
-      {/* Floating Controls */}
-      <div className="floating-controls">
-        <button 
-          className="hamburger-button"
-          onClick={handleHamburgerClick}
-          title="Menu"
-        >
-          
-        </button>
-        
-        <button 
-          className="search-button"
-          onClick={handleSearchClick}
-          title="Search"
-        >
-          
-        </button>
-      </div>
-
       {/* Hamburger Menu Dropdown */}
       {isHamburgerOpen && (
         <HamburgerMenu 
+          onClose={() => setIsHamburgerOpen(false)}
           onNewConversation={handleNewConversation}
           onViewConversations={handleViewConversations}
-          onClose={() => setIsHamburgerOpen(false)}
+          onSearchClick={handleSearchClick}
+          onSettingsClick={handleSettingsClick}
+          conversations={conversations}
         />
       )}
 
@@ -172,6 +210,15 @@ function App() {
         />
       )}
 
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <Settings 
+          onClose={() => setIsSettingsOpen(false)}
+          settings={settings}
+          onSettingsUpdate={handleSettingsUpdate}
+        />
+      )}
+
       {/* Main Chat Interface */}
       <ChatInterface 
         conversationId={currentConversationId}
@@ -179,10 +226,12 @@ function App() {
         onConversationUpdate={handleConversationUpdate}
         onConversationCreate={handleConversationCreate}
         onNewConversation={handleNewConversation}
+        onHamburgerClick={handleHamburgerClick}
+        onSearchClick={handleSearchClick}
       />
 
       {/* Background overlay to close modals when clicking outside */}
-      {(isHamburgerOpen || isConversationsOpen || isSearchOpen) && (
+      {(isHamburgerOpen || isConversationsOpen || isSearchOpen || isSettingsOpen) && (
         <div 
           className="modal-overlay" 
           onClick={closeAllModals}

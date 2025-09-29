@@ -9,7 +9,9 @@ const ChatInterface = ({
   // sessionId, 
   onConversationUpdate, 
   // onConversationCreate,
-  onNewConversation
+  onNewConversation,
+  onHamburgerClick,
+  onSearchClick
 }) => {
   const [messages, setMessages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -112,17 +114,34 @@ const ChatInterface = ({
   return (
     <div className="chat-interface">
       <div className="chat-header">
-        <div className="header-left">
-          {/* Left side - empty for floating hamburger */}
+        <div className="header-top-row">
+          <div className="header-left">
+            <button 
+              className="hamburger-button"
+              onClick={onHamburgerClick}
+              title="Menu"
+            >
+              ☰
+            </button>
+          </div>
+          
+          <div className="header-center">
+            <h1 className="header-title"> Jamal AI Assistant</h1>
+          </div>
+          
+          <div className="header-right">
+            <button 
+              className="search-button"
+              onClick={onSearchClick}
+              title="Search"
+            >
+              🔍
+            </button>
+          </div>
         </div>
         
-        <div className="header-center">
-          <h1 className="header-title">AI Assistant</h1>
-          <span className="model-badge">Gemini 1.5 Flash</span>
-        </div>
-        
-        <div className="header-right">
-          {/* Model is now fixed to gemini-1.5-flash */}
+        <div className="header-bottom-row">
+          <span className="model-badge">Gemini 2.5 Flash</span>
         </div>
       </div>
 
