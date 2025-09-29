@@ -7,10 +7,10 @@
 
 ## Steps to Deploy
 
-### 1. Update Environment Variables
-Before deploying, update `.env.production` with your actual backend API URL:
+### 1. Environment Variables (Already Updated!)
+Your `.env.production` is already configured with your Render backend:
 ```
-VITE_API_BASE_URL=https://your-actual-backend-url.com
+VITE_API_BASE_URL=https://ai-assignment-1-ojix.onrender.com
 ```
 
 **Note**: For development, the app automatically uses `http://localhost:9000` as configured in `src/config/api.js`
@@ -41,7 +41,7 @@ vercel --prod
 ### 3. Environment Variables in Vercel Dashboard
 Add these environment variables in your Vercel project settings:
 - **Variable Name**: `VITE_API_BASE_URL`
-- **Value**: `https://your-backend-api-url.com`
+- **Value**: `https://ai-assignment-1-ojix.onrender.com`
 - **Environment**: Production
 
 ### 4. Backend Considerations
