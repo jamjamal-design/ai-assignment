@@ -1,0 +1,211 @@
+/* Conversations List Overlay */
+.conversations-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  z-index: 1100;
+}
+
+.conversations-list-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  background: var(--color-main);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 28px rgba(0,0,0,0.45);
+  z-index: 1101;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.conversations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.conversations-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.close-conversations-btn {
+  background: var(--color-btn-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-accent);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+.close-conversations-btn:hover { background: var(--color-btn-hover); }
+
+.conversations-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+}
+
+.conversations-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.conversation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--color-bg);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-text);
+}
+.conversation-item:hover { background: var(--color-btn-hover); border-color: var(--color-border); }
+.conversation-item.active { background: var(--color-btn-hover); border-color: var(--color-accent); }
+
+.conversation-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.conversation-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+.conversation-preview {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-date {
+  font-size: 0.7rem;
+  color: var(--color-accent);
+  letter-spacing: 0.5px;
+}
+
+.delete-conversation-btn {
+  background: transparent;
+  color: var(--color-accent);
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.conversation-item:hover .delete-conversation-btn { opacity: 1; }
+.delete-conversation-btn:hover { background: var(--color-btn-hover); color: #ff6666; }
+
+.empty-conversations {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-accent);
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.empty-conversations p {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.empty-conversations small {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .conversations-list-panel {
+    width: 95%;
+    max-height: 85vh;
+  }
+  
+  .conversations-header {
+    padding: 0.85rem 1rem;
+  }
+  
+  .conversations-header h3 {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .conversations-list-panel {
+    width: 98%;
+    max-height: 90vh;
+    border-radius: 12px;
+  }
+  
+  .conversation-item {
+    padding: 0.75rem 0.85rem;
+  }
+  
+  .conversation-title {
+    font-size: 0.85rem;
+  }
+  
+  .conversation-preview {
+    font-size: 0.7rem;
+  }
+  
+  .delete-conversation-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem;
+  }
+}

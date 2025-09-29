@@ -1,0 +1,235 @@
+/* MessageList now uses global dark theme variables. Local bubble / code vars: */
+/* Removed per-file bubble vars; code bg + shadow retained for code blocks & avatars */
+.message-list {
+  --ml-code-bg: #262b31;
+  --ml-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* ---------------------------------------------------- */
+/* Message List Section */
+/* ---------------------------------------------------- */
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: transparent;
+}
+
+.message {
+  display: flex;
+  gap: 0.75rem;
+  animation: messageSlideIn 0.3s ease-out;
+  width: 100%;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.assistant {
+  justify-content: flex-start;
+}
+
+.message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  background: var(--ml-code-bg);
+  margin-top: 0.25rem;
+}
+
+.message.user .message-avatar { background: var(--color-btn-hover); color: var(--color-text); font-weight: 500; }
+
+.message.assistant .message-avatar {
+  background: linear-gradient(135deg, #4285f4 0%, #34a853 25%, #fbbc04 50%, #ea4335 75%);
+  color: white;
+  font-weight: 500;
+}
+
+.message-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 65%;
+}
+
+.message.user .message-content {
+  align-items: flex-end;
+}
+
+.message.assistant .message-content {
+  align-items: flex-start;
+}
+
+.message-header {
+  display: none;
+}
+
+.message-role {
+  display: none;
+}
+
+.message-timestamp { font-size: 0.75rem; color: var(--color-accent); margin-top: 0.25rem; font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+/* Bubble container styles now in bubbles.css (.bubble, .bubble-user, .bubble-ai). */
+.message-text {
+  /* Keep only text / layout related rules; visual container handled by shared bubble classes. */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+  font-size: 0.875rem;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.message-text::before {
+  display: none;
+}
+
+.message-text p {
+  margin: 0 0 0.5rem 0;
+}
+
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+.message-text pre {
+  background: var(--ml-code-bg);
+  padding: 0.75rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.message.user .message-text pre { background: rgba(0,0,0,0.35); color: var(--color-text); }
+
+.message-text code {
+  background: var(--ml-code-bg);
+  padding: 0.125rem 0.25rem;
+  border-radius: 4px;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.85em;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.message.user .message-text code {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.message-text pre code {
+  background: none;
+  padding: 0;
+}
+
+.typing-indicator { display: flex; align-items: center; gap: 0.5rem; padding: 1rem; color: var(--color-accent); font-style: italic; }
+
+.typing-dots {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.typing-dot { width: 6px; height: 6px; background: var(--color-accent); border-radius: 50%; animation: typingPulse 1.4s ease-in-out infinite both; }
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typingPulse {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* ---------------------------------------------------- */
+/* Mobile responsive styles */
+/* ---------------------------------------------------- */
+@media (max-width: 768px) {
+  .message {
+    max-width: 95%;
+    gap: 0.5rem;
+  }
+  
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .bubble { padding: 0.75rem; font-size: 0.9rem; }
+  
+  .message-text::before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-list {
+    padding: 0.5rem 0 100px 0;
+    gap: 0.75rem;
+  }
+
+  .message {
+    max-width: 98%;
+    gap: 0.4rem;
+  }
+  
+  .message-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+  
+  .bubble { padding: 0.75rem; font-size: 0.85rem; border-radius: 12px; line-height: 1.5; }
+  
+  .message-header {
+    margin-bottom: 0.25rem;
+  }
+  
+  .message-role {
+    font-size: 0.75rem;
+  }
+  
+  .message-timestamp {
+    font-size: 0.7rem;
+  }
+  
+  .typing-indicator {
+    margin-left: 0.5rem;
+  }
+}
