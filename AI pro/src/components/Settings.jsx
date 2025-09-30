@@ -98,8 +98,8 @@ const Settings = ({ onClose, settings, onSettingsUpdate }) => {
             <div className="setting-item">
               <label>Current Model</label>
               <div className="model-info">
-                <span className="model-name">Gemini 1.5 Flash</span>
-                <span className="model-description">Fast and efficient for most tasks</span>
+                <span className="model-name">Gemini 2.5 Flash</span>
+                <span className="model-description">Latest fast and efficient model for most tasks</span>
               </div>
             </div>
           </div>

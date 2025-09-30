@@ -14,7 +14,7 @@ const generateContent = async (req, res) => {
       res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,X-Requested-With,Accept');
     }
     
-    const { contents, model = 'gemini-1.5-flash' } = req.body;
+    const { contents, model = 'gemini-2.5-flash' } = req.body;
     
     // Use the AI service with integrated retry logic
     const result = await aiService.generateContent(contents, model);

@@ -20,7 +20,7 @@ class AIService {
   }
 
   // Generate content with retry logic
-  async generateContent(contents, model = "gemini-1.5-flash", maxRetries = 3) {
+  async generateContent(contents, model = "gemini-2.5-flash", maxRetries = 3) {
     if (!this.isValidModel(model)) {
       throw new Error(`Invalid model. Supported models: ${this.validModels.join(", ")}`);
     }
