@@ -9,40 +9,32 @@ const logger = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-// CORS configuration - More permissive for debugging
+// CORS configuration - Simplified and more reliable
 const corsOptions = {
-  origin: function (origin, callback) {
-    console.log('CORS Check - Origin:', origin, 'NODE_ENV:', process.env.NODE_ENV);
-    
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) {
-      console.log('No origin - allowing');
-      return callback(null, true);
-    }
-    
-    // Always allow Vercel domains and localhost
-    if (origin.includes('vercel.app') || 
-        origin.includes('localhost') || 
-        origin.includes('127.0.0.1') ||
-        origin.includes('ai-assignment-1-ojix.onrender.com')) {
-      console.log('Allowed origin:', origin);
-      callback(null, true);
-    } else {
-      console.log('CORS blocked origin:', origin);
-      // For now, let's allow all origins to debug the issue
-      callback(null, true);
-    }
-  },
+  origin: true, // Allow all origins for debugging
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
-  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-  preflightContinue: false,
   optionsSuccessStatus: 200
 };
 
 // Middleware
 app.use(cors(corsOptions));
+
+// Additional CORS middleware to ensure headers are always set
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  res.header('Access-Control-Allow-Origin', origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,X-Requested-With,Accept');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
