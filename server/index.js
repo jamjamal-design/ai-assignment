@@ -48,13 +48,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Handle preflight requests explicitly
-app.options('*', (req, res) => {
-  console.log('Preflight request received for:', req.path);
-  console.log('Origin:', req.headers.origin);
-  res.status(200).end();
-});
-
 // API routes
 app.use('/api/ai', aiRoutes);
 
