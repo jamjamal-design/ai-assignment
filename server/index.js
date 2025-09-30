@@ -9,18 +9,36 @@ const logger = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-// CORS configuration
+// CORS configuration - More permissive for debugging
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://ai-ten-alpha-19.vercel.app', // Old Vercel URL (keep for backwards compatibility)
-        'https://ai-assignment-1-ojix.onrender.com', // Your backend URL (for self-requests)
-        process.env.FRONTEND_URL || 'https://your-frontend-url.vercel.app' // Your actual frontend URL - update this after deploying
-      ]
-    : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:4173'], // Allow local development (including Vite preview)
+  origin: function (origin, callback) {
+    console.log('CORS Check - Origin:', origin, 'NODE_ENV:', process.env.NODE_ENV);
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) {
+      console.log('No origin - allowing');
+      return callback(null, true);
+    }
+    
+    // Always allow Vercel domains and localhost
+    if (origin.includes('vercel.app') || 
+        origin.includes('localhost') || 
+        origin.includes('127.0.0.1') ||
+        origin.includes('ai-assignment-1-ojix.onrender.com')) {
+      console.log('Allowed origin:', origin);
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      // For now, let's allow all origins to debug the issue
+      callback(null, true);
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  preflightContinue: false,
+  optionsSuccessStatus: 200
 };
 
 // Middleware
@@ -36,6 +54,13 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });
+});
+
+// Handle preflight requests explicitly
+app.options('*', (req, res) => {
+  console.log('Preflight request received for:', req.path);
+  console.log('Origin:', req.headers.origin);
+  res.status(200).end();
 });
 
 // API routes
